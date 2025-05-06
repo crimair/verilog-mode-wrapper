@@ -2,8 +2,8 @@
   "name": "verilog-mode-wrapper",
   "displayName": "verilog-mode-wrapper",
   "description": "This extension wraps Emacs' verilog-mode auto functions for use in VS Code, providing batch processing commands tailored for Verilog files.",
-  "version": "0.0.2",
-  "publisher": "A.Matsukura",
+  "version": "0.0.3",
+  "publisher": "crimair",
   "engines": {
     "vscode": "^1.96.0"
   },
@@ -43,6 +43,26 @@
       {
         "command": "extension.verilog-mode-wrapper.deleteTrailingWhitespace",
         "title": "verilog-mode: Delete Trailing Whitespace"
+      },
+      {
+        "command": "extension.verilog-mode-wrapper.prettyDeclarations",
+        "title": "verilog-mode: pretty declarations"
+      },
+      {
+        "command": "extension.verilog-mode-wrapper.labelBe",
+        "title": "verilog-mode: Label BE"
+      },
+      {
+        "command": "extension.verilog-mode-wrapper.expandVector",
+        "title": "verilog-mode: Expand Vector"
+      },
+      {
+        "command": "extension.verilog-mode-wrapper.prettyExpr",
+        "title": "verilog-mode: Pretty Expression"
+      },
+      {
+        "command": "extension.verilog-mode-wrapper.deleteAutoStarImplicit",
+        "title": "verilog-mode: Delete AUTO STAR Implicit"
       }
     ],
     "configuration": {

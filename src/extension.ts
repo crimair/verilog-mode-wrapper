@@ -91,6 +91,26 @@ function verilog_batch_delete_trailing_whitespace(filePath: string, evalArgs: st
 	return executeCommandInDirectory('emacs --batch', ' -f verilog-batch-delete-trailing-whitespace', filePath, evalArgs, cursorPosition);
 }
 
+function verilog_batch_pretty_declarations(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
+	return executeCommandInDirectory('emacs --batch', ' -eval "(verilog-batch-execute-func \\`verilog-pretty-declarations)"', filePath, evalArgs, cursorPosition);
+}
+
+function verilog_batch_label_be(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
+	return executeCommandInDirectory('emacs --batch', ' -eval "(verilog-batch-execute-func \\`verilog-label-be)"', filePath, evalArgs, cursorPosition);
+}
+
+function verilog_batch_expand_vector(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
+	return executeCommandInDirectory('emacs --batch', ' -eval "(verilog-batch-execute-func \\`verilog-expand-vector)"', filePath, evalArgs, cursorPosition);
+}
+
+function verilog_batch_pretty_expr(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
+	return executeCommandInDirectory('emacs --batch', ' -eval "(verilog-batch-execute-func \\`verilog-pretty-expr)"', filePath, evalArgs, cursorPosition);
+}
+
+function verilog_batch_delete_auto_star_implicit(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
+	return executeCommandInDirectory('emacs --batch', ' -eval "(verilog-batch-execute-func \\`verilog-delete-auto-star-implicit)"', filePath, evalArgs, cursorPosition);
+}
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -135,6 +155,31 @@ export function activate(context: vscode.ExtensionContext) {
 			command: 'extension.verilog-mode-wrapper.deleteTrailingWhitespace',
 			title: 'Running verilog-mode: Delete Trailing Whitespace',
 			action: verilog_batch_delete_trailing_whitespace
+		},
+		{
+			command: 'extension.verilog-mode-wrapper.prettyDeclarations',
+			title: 'Running verilog-mode: Pretty Declarations',
+			action: verilog_batch_pretty_declarations
+},
+		{
+			command: 'extension.verilog-mode-wrapper.labelBe',
+			title: 'Running verilog-mode: Label BE',
+			action: verilog_batch_label_be
+		},
+		{
+			command: 'extension.verilog-mode-wrapper.expandVector',
+			title: 'Running verilog-mode: Expand Vector',
+			action: verilog_batch_expand_vector
+		},
+		{
+			command: 'extension.verilog-mode-wrapper.prettyExpr',
+			title: 'Running verilog-mode: Pretty Expression',
+			action: verilog_batch_pretty_expr
+		},
+		{
+			command: 'extension.verilog-mode-wrapper.deleteAutoStarImplicit',
+			title: 'Running verilog-mode: Delete AUTO STAR Implicit',
+			action: verilog_batch_delete_auto_star_implicit
 		}
 	];
 
