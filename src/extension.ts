@@ -37,13 +37,17 @@ function getEvalArgsString(): string {
 	return `-eval \"(setq-default ${escapedArgsString})\"`;
 }
 
-function executeCommandInDirectory(command1: string, command2: string, filePath: string, evalArgs: string): Promise<string> {
+function executeCommandInDirectory(command1: string, command2: string, filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const directory = path.dirname(filePath);
 		const fileName = path.basename(filePath);
 
-		// Construct the command with evalArgs potentially included
-		const command = `cd \"${directory}\" && ${command1} ${evalArgs} \"${fileName}\" ${command2}`;
+		// Construct cursor position arguments for Emacs
+		const gotoLineArg = `-eval \"(goto-line ${cursorPosition.line + 1})\"`; // VS Code line is 0-based, Emacs is 1-based
+		const forwardCharArg = `-eval \"(forward-char ${cursorPosition.character})\"`;
+
+		// Construct the command with evalArgs and cursor position args potentially included
+		const command = `cd \"${directory}\" && ${command1} ${evalArgs} \"${fileName}\" ${gotoLineArg} ${forwardCharArg} ${command2}`;
 
 		// Log the command for debugging purposes
 		console.log(`Executing command: ${command}`);
@@ -63,28 +67,28 @@ function executeCommandInDirectory(command1: string, command2: string, filePath:
 	});
 }
 
-function verilog_batch_auto(filePath: string, evalArgs: string): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', '-f verilog-batch-auto', filePath, evalArgs);
+function verilog_batch_auto(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
+	return executeCommandInDirectory('emacs --batch', '-f verilog-batch-auto', filePath, evalArgs, cursorPosition);
 }
 
-function verilog_batch_delete_auto(filePath: string, evalArgs: string): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', '-f verilog-batch-delete-auto', filePath, evalArgs);
+function verilog_batch_delete_auto(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
+	return executeCommandInDirectory('emacs --batch', '-f verilog-batch-delete-auto', filePath, evalArgs, cursorPosition);
 }
 
-function verilog_batch_diff_auto(filePath: string, evalArgs: string): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', ' -f verilog-batch-diff-auto', filePath, evalArgs);
+function verilog_batch_diff_auto(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
+	return executeCommandInDirectory('emacs --batch', ' -f verilog-batch-diff-auto', filePath, evalArgs, cursorPosition);
 }
 
-function verilog_batch_inject_auto(filePath: string, evalArgs: string): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', ' -f verilog-batch-inject-auto', filePath, evalArgs);
+function verilog_batch_inject_auto(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
+	return executeCommandInDirectory('emacs --batch', ' -f verilog-batch-inject-auto', filePath, evalArgs, cursorPosition);
 }
 
-function verilog_batch_indent(filePath: string, evalArgs: string): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', ' -f verilog-batch-indent', filePath, evalArgs);
+function verilog_batch_indent(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
+	return executeCommandInDirectory('emacs --batch', ' -f verilog-batch-indent', filePath, evalArgs, cursorPosition);
 }
 
-function verilog_batch_delete_trailing_whitespace(filePath: string, evalArgs: string): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', ' -f verilog-batch-delete-trailing-whitespace', filePath, evalArgs);
+function verilog_batch_delete_trailing_whitespace(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
+	return executeCommandInDirectory('emacs --batch', ' -f verilog-batch-delete-trailing-whitespace', filePath, evalArgs, cursorPosition);
 }
 
 // This method is called when your extension is activated
@@ -92,7 +96,7 @@ function verilog_batch_delete_trailing_whitespace(filePath: string, evalArgs: st
 export function activate(context: vscode.ExtensionContext) {
 
 	// Define the type for command actions
-	type CommandAction = (filePath: string, evalArgs: string) => Promise<string>; // Return type is now Promise<string>
+	type CommandAction = (filePath: string, evalArgs: string, cursorPosition: vscode.Position) => Promise<string>;
 
 	// Define the structure for command objects
 	interface CommandDefinition {
@@ -147,6 +151,8 @@ export function activate(context: vscode.ExtensionContext) {
 
 			// get filepath
 			const filePath = editor.document.fileName;
+			// Get current cursor position
+			const cursorPosition = editor.selection.active;
 
 			// Get eval args from configuration
 			const evalArgsString = getEvalArgsString();
@@ -160,21 +166,15 @@ export function activate(context: vscode.ExtensionContext) {
 				progress.report({ increment: 0, message: "Starting..." });
 
 				try {
-					// Execute the command and wait for it to complete
-					const result = await action(filePath, evalArgsString);
+					// Execute the command and wait for it to complete, passing cursor position
+					const result = await action(filePath, evalArgsString, cursorPosition);
 					progress.report({ increment: 100, message: "Completed." });
-					// // Optionally show the result (stderr or stdout)
-					// if (result && result.trim() !== "") {
-					// 	vscode.window.showInformationMessage(`Done: ${result}`);
-					// } else {
-					// 	// vscode.window.showInformationMessage('Command executed successfully.');
-					// }
 				} catch (error: any) {
 					progress.report({ increment: 100, message: "Failed." });
 					vscode.window.showErrorMessage(`Error: ${error.message}`);
 				}
 				// Keep the notification visible for a short period after completion/failure
-                await new Promise(resolve => setTimeout(resolve, 3000)); // Changed 1500 to 3000
+                await new Promise(resolve => setTimeout(resolve, 3000));
 			});
 		});
 		context.subscriptions.push(disposable);
