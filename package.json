@@ -1,8 +1,8 @@
 {
   "name": "verilog-mode-wrapper",
   "displayName": "verilog-mode-wrapper",
-  "description": "",
-  "version": "0.0.1",
+  "description": "This extension wraps Emacs' verilog-mode auto functions for use in VS Code, providing batch processing commands tailored for Verilog files.",
+  "version": "0.0.2",
   "publisher": "A.Matsukura",
   "engines": {
     "vscode": "^1.96.0"
@@ -10,19 +10,64 @@
   "categories": [
     "Other"
   ],
-  "activationEvents": [],
+  "activationEvents": [
+    "onLanguage:verilog"
+  ],
   "main": "./dist/extension.js",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/crimair/verilog-mode-wrapper"
+  },
   "contributes": {
     "commands": [
       {
-        "command": "extension.runVerilogAuto",
-        "title": "verilog-mode: verilog-batch-auto"
+        "command": "extension.verilog-mode-wrapper.auto",
+        "title": "verilog-mode: AUTOs"
       },
       {
-        "command": "extension.deleteVerilogAuto",
-        "title": "verilog-mode: verilog-batch-deleteauto"
+        "command": "extension.verilog-mode-wrapper.deleteAuto",
+        "title": "verilog-mode: Delete AUTOs"
+      },
+      {
+        "command": "extension.verilog-mode-wrapper.diffAuto",
+        "title": "verilog-mode: Diff AUTOs"
+      },
+      {
+        "command": "extension.verilog-mode-wrapper.injectAuto",
+        "title": "verilog-mode: Inject AUTOs"
+      },
+      {
+        "command": "extension.verilog-mode-wrapper.indent",
+        "title": "verilog-mode: Indent"
+      },
+      {
+        "command": "extension.verilog-mode-wrapper.deleteTrailingWhitespace",
+        "title": "verilog-mode: Delete Trailing Whitespace"
       }
-    ]
+    ],
+    "configuration": {
+      "title": "Verilog Mode Wrapper",
+      "properties": {
+        "verilog-mode-wrapper.evalArgs": {
+          "type": "object",
+          "default": {
+            "verilog-indent-level": 3,
+            "verilog-indent-level-module": 3,
+            "verilog-indent-level-declaration": 3,
+            "verilog-indent-level-behavioral": 3,
+            "verilog-indent-level-directive": 1,
+            "verilog-auto-inst-param-value": "nil",
+            "verilog-case-indent": 2,
+            "verilog-cexp-indent": 1,
+            "verilog-auto-lineup": "`declarations",
+            "verilog-auto-endcomments": "t",
+            "indent-tabs-mode": "t",
+            "verilog-minimum-comment-distance": 10
+          },
+          "description": "Additional arguments to pass to emacs using -eval '(setq-default ...)'. Example: { \"verilog-auto-wire-type\": \"wire\", \"verilog-auto-inst-vector\": \"nil\" }"
+        }
+      }
+    }
   },
   "scripts": {
     "vscode:prepublish": "npm run package",
