@@ -65,11 +65,12 @@
         "title": "verilog-mode: Delete AUTO STAR Implicit"
       }
     ],
-    "configuration": {
+        "configuration": {
       "title": "Verilog Mode Wrapper",
       "properties": {
         "verilog-mode-wrapper.evalArgs": {
           "type": "object",
+          "scope": "resource",
           "default": {
             "verilog-indent-level": 3,
             "verilog-indent-level-module": 3,
@@ -84,7 +85,7 @@
             "indent-tabs-mode": "t",
             "verilog-minimum-comment-distance": 10
           },
-          "description": "Additional arguments to pass to emacs using -eval '(setq-default ...)'. Example: { \"verilog-auto-wire-type\": \"wire\", \"verilog-auto-inst-vector\": \"nil\" }"
+          "description": "Specifies additional arguments to customize the behavior of Emacs verilog-mode. Specify as an object of key-value pairs, which will be passed to Emacs Lisp for evaluation. Example of default settings: { \"verilog-indent-level\": 3, \"verilog-auto-inst-param-value\": \"nil\" }"
         }
       }
     }
