@@ -59,7 +59,7 @@
             "verilog-auto-inst-param-value": "nil",
             "verilog-case-indent": 2,
             "verilog-cexp-indent": 1,
-            "verilog-auto-lineup": "`declarations",
+            "verilog-auto-lineup": "'declarations",
             "verilog-auto-endcomments": "t",
             "indent-tabs-mode": "t",
             "verilog-minimum-comment-distance": 10
