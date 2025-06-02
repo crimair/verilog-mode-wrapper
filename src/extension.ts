@@ -2,6 +2,18 @@ import * as vscode from 'vscode';
 import { exec } from 'child_process';
 import * as path from 'path';
 
+function getEmacsCommand(): string {
+	const config = vscode.workspace.getConfiguration('verilog-mode-wrapper');
+	const emacsPath = config.get<string>('emacsPath');
+	
+	if (emacsPath && emacsPath.trim() !== '') {
+		return emacsPath;
+	}
+	
+	// Default to 'emacs' if no path is configured
+	return 'emacs';
+}
+
 function getEvalArgsString(): string {
 	const config = vscode.workspace.getConfiguration('verilog-mode-wrapper');
 	const evalArgs = config.get<Record<string, any>>('evalArgs');
@@ -37,17 +49,18 @@ function getEvalArgsString(): string {
 	return `-eval \"(setq-default ${escapedArgsString})\"`;
 }
 
-function executeCommandInDirectory(command1: string, command2: string, filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
+function executeCommandInDirectory(command2: string, filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
 	return new Promise((resolve, reject) => {
 		const directory = path.dirname(filePath);
 		const fileName = path.basename(filePath);
+		const emacsCommand = getEmacsCommand();
 
 		// Construct cursor position arguments for Emacs
 		const gotoLineArg = `-eval \"(goto-line ${cursorPosition.line + 1})\"`; // VS Code line is 0-based, Emacs is 1-based
 		const forwardCharArg = `-eval \"(forward-char ${cursorPosition.character})\"`;
 
 		// Construct the command with evalArgs and cursor position args potentially included
-		const command = `cd \"${directory}\" && ${command1} ${evalArgs} \"${fileName}\" ${gotoLineArg} ${forwardCharArg} ${command2}`;
+		const command = `cd \"${directory}\" && \"${emacsCommand}\" --batch ${evalArgs} \"${fileName}\" ${gotoLineArg} ${forwardCharArg} ${command2}`;
 
 		// Log the command for debugging purposes
 		console.log(`Executing command: ${command}`);
@@ -68,47 +81,47 @@ function executeCommandInDirectory(command1: string, command2: string, filePath:
 }
 
 function verilog_batch_auto(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', '-f verilog-batch-auto', filePath, evalArgs, cursorPosition);
+	return executeCommandInDirectory('-f verilog-batch-auto', filePath, evalArgs, cursorPosition);
 }
 
 function verilog_batch_delete_auto(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', '-f verilog-batch-delete-auto', filePath, evalArgs, cursorPosition);
+	return executeCommandInDirectory('-f verilog-batch-delete-auto', filePath, evalArgs, cursorPosition);
 }
 
 function verilog_batch_diff_auto(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', ' -f verilog-batch-diff-auto', filePath, evalArgs, cursorPosition);
+	return executeCommandInDirectory('-f verilog-batch-diff-auto', filePath, evalArgs, cursorPosition);
 }
 
 function verilog_batch_inject_auto(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', ' -f verilog-batch-inject-auto', filePath, evalArgs, cursorPosition);
+	return executeCommandInDirectory('-f verilog-batch-inject-auto', filePath, evalArgs, cursorPosition);
 }
 
 function verilog_batch_indent(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', ' -f verilog-batch-indent', filePath, evalArgs, cursorPosition);
+	return executeCommandInDirectory('-f verilog-batch-indent', filePath, evalArgs, cursorPosition);
 }
 
 function verilog_batch_delete_trailing_whitespace(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', ' -f verilog-batch-delete-trailing-whitespace', filePath, evalArgs, cursorPosition);
+	return executeCommandInDirectory('-f verilog-batch-delete-trailing-whitespace', filePath, evalArgs, cursorPosition);
 }
 
 function verilog_batch_pretty_declarations(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', ' -eval "(verilog-batch-execute-func \\`verilog-pretty-declarations)"', filePath, evalArgs, cursorPosition);
+	return executeCommandInDirectory('-eval "(verilog-batch-execute-func \\`verilog-pretty-declarations)"', filePath, evalArgs, cursorPosition);
 }
 
 function verilog_batch_label_be(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', ' -eval "(verilog-batch-execute-func \\`verilog-label-be)"', filePath, evalArgs, cursorPosition);
+	return executeCommandInDirectory('-eval "(verilog-batch-execute-func \\`verilog-label-be)"', filePath, evalArgs, cursorPosition);
 }
 
 function verilog_batch_expand_vector(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', ' -eval "(verilog-batch-execute-func \\`verilog-expand-vector)"', filePath, evalArgs, cursorPosition);
+	return executeCommandInDirectory('-eval "(verilog-batch-execute-func \\`verilog-expand-vector)"', filePath, evalArgs, cursorPosition);
 }
 
 function verilog_batch_pretty_expr(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', ' -eval "(verilog-batch-execute-func \\`verilog-pretty-expr)"', filePath, evalArgs, cursorPosition);
+	return executeCommandInDirectory('-eval "(verilog-batch-execute-func \\`verilog-pretty-expr)"', filePath, evalArgs, cursorPosition);
 }
 
 function verilog_batch_delete_auto_star_implicit(filePath: string, evalArgs: string, cursorPosition: vscode.Position): Promise<string> {
-	return executeCommandInDirectory('emacs --batch', ' -eval "(verilog-batch-execute-func \\`verilog-delete-auto-star-implicit)"', filePath, evalArgs, cursorPosition);
+	return executeCommandInDirectory('-eval "(verilog-batch-execute-func \\`verilog-delete-auto-star-implicit)"', filePath, evalArgs, cursorPosition);
 }
 
 // This method is called when your extension is activated

@@ -2,7 +2,7 @@
   "name": "verilog-mode-wrapper",
   "displayName": "verilog-mode-wrapper",
   "description": "This extension wraps Emacs' verilog-mode auto functions for use in VS Code, providing batch processing commands tailored for Verilog files.",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "publisher": "crimair",
   "engines": {
     "vscode": "^1.96.0"
@@ -68,6 +68,12 @@
         "configuration": {
       "title": "Verilog Mode Wrapper",
       "properties": {
+        "verilog-mode-wrapper.emacsPath": {
+          "type": "string",
+          "scope": "resource",
+          "default": "",
+          "description": "Path to the Emacs executable. If empty, 'emacs' will be used from PATH. Example: 'C:\\emacs\\bin\\emacs.exe' on Windows or '/usr/local/bin/emacs' on Unix."
+        },
         "verilog-mode-wrapper.evalArgs": {
           "type": "object",
           "scope": "resource",

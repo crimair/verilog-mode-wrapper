@@ -8,8 +8,8 @@
 
 ## 要件
 
-- emacs
-- この拡張機能は Linux 環境でテストされています。
+- Emacs
+- この拡張機能は Linux と Windows 環境でテストされています。
 
 ## 使用方法
 
@@ -17,7 +17,36 @@
 
 **注意:** この拡張機能が提供するコマンドには、デフォルトのキーボードショートカットは割り当てられていません。VS Code のキーボードショートカット設定から、お好みのショートカットを割り当ててください。
 
+## インストールとセットアップ
+
+### Windows
+
+1. **winget を使用して Emacs をインストール:**
+   ```
+   winget install GNU.Emacs
+   ```
+
+2. **VS Code 設定で Emacs パスを設定:**
+   - VS Code 設定を開く (ファイル > 設定 > 設定)
+   - "verilog-mode-wrapper" を検索
+   - "Emacs Path" に次のパスを設定: `C:\Program Files\Emacs\emacs-30.1\bin\emacs.exe`
+   - **注意:** バージョン番号 (30.1) は Emacs のインストールに応じて変わる場合があります。パスを適切に調整してください。
+
+### Linux/macOS
+
+- Emacs が PATH で利用可能である必要があります（パッケージマネージャーでインストールなど）
+- Emacs がカスタムの場所にインストールされている場合は、"Emacs Path" 設定でパスを指定できます
+
 ## 設定
+
+### Emacs Path
+
+`emacsPath` 設定を使用すると、Emacs 実行ファイルへのカスタムパスを指定できます。空のままにすると、拡張機能はシステムの PATH から `emacs` を使用します。
+
+例:
+- Windows: `C:\Program Files\Emacs\emacs-30.1\bin\emacs.exe`
+- Linux: `/usr/local/bin/emacs`
+- macOS: `/opt/homebrew/bin/emacs`
 
 ### evalArgs
 
@@ -52,5 +81,12 @@
 * batch-execute-func verilog-expand-vector
 * batch-execute-func verilog-label-be
 * batch-execute-func verilog-auto-star-implicit
+
+### 0.0.4
+
+Windows サポート追加:
+* `emacsPath` 設定でカスタム Emacs 実行ファイルパスを指定可能
+* Windows インストールおよびセットアップ手順
+* クロスプラットフォームパスサポート
 
 **お楽しみください！**
